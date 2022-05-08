@@ -1,47 +1,63 @@
-/*
-*
-*
-*       Complete the API routing below
-*       
-*       
-*/
-
 'use strict';
 
-module.exports = function (app) {
+module.exports = (app, booksManager) => {
 
   app.route('/api/books')
-    .get(function (req, res){
-      //response will be array of book objects
-      //json res format: [{"_id": bookid, "title": book_title, "commentcount": num_of_comments },...]
+    .get(async (req, res) => {
+      const books = await booksManager.findAll();
+      return res.status(200).json(books);
     })
     
-    .post(function (req, res){
+    .post(async (req, res) => {
       let title = req.body.title;
-      //response will contain new book object including atleast _id and title
+      if (!title) {
+        return res.status(200).send('missing required field title');
+      } else {
+        const book = await booksManager.create(title);
+        return res.status(200).json(book);
+      }
     })
     
-    .delete(function(req, res){
-      //if successful response will be 'complete delete successful'
+    .delete(async (req, res) => {
+      booksManager.removeAll();
+      return res.status(200).send('complete delete successful');
     });
-
-
 
   app.route('/api/books/:id')
-    .get(function (req, res){
-      let bookid = req.params.id;
-      //json res format: {"_id": bookid, "title": book_title, "comments": [comment,comment,...]}
+    .get(async (req, res) => {
+      let bookid = req.params.id
+      const book = await booksManager.findById(bookid);
+      if (!book) {
+        return res.status(200).send('no book exists');
+      } else {
+        return res.status(200).json(book);
+      }
     })
     
-    .post(function(req, res){
+    .post(async (req, res) => {
       let bookid = req.params.id;
       let comment = req.body.comment;
-      //json res format same as .get
+      if (!comment) {
+        return res.status(200).send('missing required field comment');
+      } else {
+        const book = await booksManager.findById(bookid);
+        if (!book) {
+          return res.status(200).send('no book exists');
+        } else {
+          await booksManager.addComment(book, comment);
+          return res.status(200).json(book);
+        }
+      }
     })
     
-    .delete(function(req, res){
+    .delete(async (req, res) => {
       let bookid = req.params.id;
-      //if successful response will be 'delete successful'
+      const book = await booksManager.findById(bookid);
+      if (!book) {
+        return res.status(200).send('no book exists');
+      } else {
+        await booksManager.remove(bookid);
+        return res.status(200).send('delete successful');
+      }
     });
-  
 };
