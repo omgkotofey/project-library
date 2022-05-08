@@ -27,5 +27,5 @@ BooksSchema.virtual('commentcount').get(function() {
 
 module.exports = {
   BooksSchema: BooksSchema,
-  Books: mongoose.model('Books', BookSchema),
+  Books: mongoose.model('Books', BooksSchema),
 }

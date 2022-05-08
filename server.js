@@ -5,6 +5,8 @@ const bodyParser  = require('body-parser');
 const cors        = require('cors');
 require('dotenv').config();
 
+const { BooksManager }  = require('./src/managers.js');
+
 const apiRoutes         = require('./routes/api.js');
 const fccTestingRoutes  = require('./routes/fcctesting.js');
 const runner            = require('./test-runner');
@@ -28,7 +30,7 @@ app.route('/')
 fccTestingRoutes(app);
 
 //Routing for API 
-apiRoutes(app);  
+apiRoutes(app, BooksManager);  
     
 //404 Not Found Middleware
 app.use(function(req, res, next) {
