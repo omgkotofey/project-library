@@ -56,7 +56,7 @@ module.exports = (app, booksManager) => {
       if (!book) {
         return res.status(200).send('no book exists');
       } else {
-        await booksManager.remove(bookid);
+        await booksManager.removeById(bookid);
         return res.status(200).send('delete successful');
       }
     });

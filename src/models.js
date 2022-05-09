@@ -24,6 +24,8 @@ const BooksSchema = new mongoose.Schema({
 BooksSchema.virtual('commentcount').get(function() {
   return this.comments.length;
 });
+BooksSchema.set('toJSON', { virtuals: true });
+
 
 module.exports = {
   BooksSchema: BooksSchema,
